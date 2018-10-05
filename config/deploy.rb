@@ -24,6 +24,7 @@ set :repo_url, "git@github.com:8thlight/blue_green_deployment.git"
 # append :linked_files, "config/database.yml"
 
 # Default value for linked_dirs is []
+append :linked_dirs, "shared/pids"
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
 
 # Default value for default_env is {}
@@ -37,3 +38,13 @@ set :repo_url, "git@github.com:8thlight/blue_green_deployment.git"
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
+set :unicorn_pid, -> { File.join(current_path, "shared", "pids", "unicorn.pid") }
+
+after 'deploy:publishing', 'deploy:restart'
+namespace :deploy do
+  task :restart do
+    invoke 'unicorn:reload'
+  end
+end
