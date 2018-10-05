@@ -10,6 +10,7 @@ timeout 30
 
 # Set up socket location
 listen "#{shared_dir}/sockets/unicorn.sock", :backlog => 64
+listen 8080, :tcp_nopush => true
 
 # Logging
 stderr_path "#{shared_dir}/log/unicorn.stderr.log"
