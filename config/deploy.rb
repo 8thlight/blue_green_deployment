@@ -8,7 +8,16 @@ set :repo_url, "git@github.com:8thlight/blue_green_deployment.git"
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/var/www/blue_green_deployment_staging"
+# set :deploy_to, "/var/www/blue_green_deployment_staging"
+after 'git:check', 'deploy:set_deploy_to'
+namespace :deploy do
+  task :set_deploy_to do
+    on roles(:app) do
+      deploy_to = capture(:readlink, '/var/www/blue_green_deployment_staging')
+      set :deploy_to, deploy_to
+    end
+  end
+end
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
